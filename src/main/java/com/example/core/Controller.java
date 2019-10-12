@@ -3,6 +3,7 @@ package com.example.core;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,9 @@ import java.util.UUID;
 
 @RestController
 public class Controller {
+
+    @Autowired
+    private DataRepository dataRepository;
 
     Logger log = LoggerFactory.getLogger(Controller.class);
 
@@ -47,10 +51,13 @@ public class Controller {
         }
 
         if (!validateData(data)) {
+
             return "Oops! One of the mandatory fields is empty...";
         }
 
-        UUID uuid = UUID.randomUUID();
+        User user = new User(data);
+
+        dataRepository.save(user);
 
 
         log.info(data.getLastName());
@@ -60,7 +67,7 @@ public class Controller {
 
 
 
-        return uuid.toString();
+        return user.getPassword();
     }
 
     //TODO: it is not beautiful - better use Predicates interfacecp
