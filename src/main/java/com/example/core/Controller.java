@@ -20,7 +20,13 @@ public class Controller {
     @Autowired
     private DataRepository dataRepository;
 
+    @Autowired
+    private DataRepositoryJournal dataRepositoryJournal;
+
+
     Logger log = LoggerFactory.getLogger(Controller.class);
+    private Object Error;
+
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
     public @ResponseBody
@@ -36,27 +42,35 @@ public class Controller {
         String contentType = file.getContentType();
         String fileContent = null;
         XmlDto data = null;
+
+        String error = null;
         try {
             fileContent = new String(file.getBytes(), "UTF-8");
         } catch (IOException e) {
             log.error(e.getStackTrace().toString());
-            return "File cannot be read";
+            error = "File cannot be read";
         }
 
         try {
             data = deserializeXml(fileContent);
         } catch (Exception e) {
             log.error(e.getStackTrace().toString());
-            return "XML Structrure is not valid";
+            error = "XML Structrure is not valid";
         }
 
         if (!validateData(data)) {
+            error = "Oops! One of the mandatory fields is empty...";
+        }
 
-            return "Oops! One of the mandatory fields is empty...";
+        if (error != null) {
+            // put error record into DB journal table
+            Error err = new Error(error);
+            dataRepositoryJournal.save(err);
+            // return status to user
+            return error;
         }
 
         User user = new User(data);
-
         dataRepository.save(user);
 
 
@@ -72,20 +86,15 @@ public class Controller {
 
     //TODO: it is not beautiful - better use Predicates interfacecp
     private boolean validateData(XmlDto data) {
-        if (data.getLastName().isEmpty()
-                || data.getFirstName().isEmpty()
-                || data.getEmail().isEmpty()
-                || data.getHabbits().isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !data.getLastName().isEmpty()
+                && !data.getFirstName().isEmpty()
+                && !data.getEmail().isEmpty()
+                && !data.getHabbits().isEmpty();
     }
 
     private XmlDto deserializeXml(String xml) throws Exception {
         XmlMapper xmlMapper = new XmlMapper();
-        XmlDto data = xmlMapper.readValue(xml, XmlDto.class);
-        return data;
+        return xmlMapper.readValue(xml, XmlDto.class);
     }
 
 
