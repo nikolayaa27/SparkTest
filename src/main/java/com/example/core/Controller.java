@@ -59,21 +59,7 @@ public class Controller {
         log.info(data.getHabbits());
 
 
-//        if (!file.isEmpty()) {
-//            try {
-//                byte[] bytes = file.getBytes();
-//                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(name + "-uploaded")));
-//                stream.write(bytes);
-//                stream.close();
-//
-//                log.info(fileContent);
-//                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
-//            } catch (Exception e) {
-//                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
-//            }
-//        } else {
-//            return "Вам не удалось загрузить " + name + " потому что файл пустой.";
-//        }
+
         return uuid.toString();
     }
 
