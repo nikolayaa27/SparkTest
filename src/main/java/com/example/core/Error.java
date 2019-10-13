@@ -25,6 +25,7 @@ public class Error {
         this.error = error;
         this.id = UUID.randomUUID().toString();
         this.date = new Date();
+
     }
 }
 
