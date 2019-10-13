@@ -52,10 +52,18 @@ public class Controller {
         Optional<User> byEmailAndPassword = dataRepository.findByEmailAndPassword(username, pass);
         if (byEmailAndPassword.isPresent()) {
             //TODO: here you need to add the code for the new page
+
+
+
             return "complete";
         } else
         {
-            return "not available";
+
+            String error = "unauthorized access attempt";
+            Error err = new Error(error);
+            dataRepositoryJournal.save(err);
+
+            return error;
         }
 
 
