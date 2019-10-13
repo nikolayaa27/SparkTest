@@ -26,6 +26,7 @@ public class Error {
         this.id = UUID.randomUUID().toString();
         this.date = new Date();
 
+
     }
 }
 
