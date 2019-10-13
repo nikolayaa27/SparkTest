@@ -21,6 +21,7 @@ public class Error {
     private String id;
 
 
+
     Error(String error) {
         this.error = error;
         this.id = UUID.randomUUID().toString();
