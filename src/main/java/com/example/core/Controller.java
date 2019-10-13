@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +28,38 @@ public class Controller {
 
     Logger log = LoggerFactory.getLogger(Controller.class);
     private Object Error;
+
+    @RequestMapping("/index")
+    public ModelAndView index () {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index.html");
+        return modelAndView;
+    }
+
+    @RequestMapping("/login")
+    public ModelAndView login () {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login.html");
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/signIn", method = RequestMethod.POST)
+    public @ResponseBody
+    String handleSignIn(@RequestParam("username") String username,
+                        @RequestParam("password") String pass) {
+
+        Optional<User> byEmailAndPassword = dataRepository.findByEmailAndPassword(username, pass);
+        if (byEmailAndPassword.isPresent()) {
+            //TODO: here you need to add the code for the new page
+            return "complete";
+        } else
+        {
+            return "not available";
+        }
+
+    }
+
 
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
